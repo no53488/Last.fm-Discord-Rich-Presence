@@ -1,94 +1,93 @@
 {
-	"name": "last.fm-rich-presence",
-	"productName": "Last.fm Rich Presence",
-	"version": "1.0.6",
-	"description": "An elegant, efficient, easy-to-setup and arguably the best Last.fm discord rich presence!",
-	"main": "src/index.js",
-	"scripts": {
-		"start": "electron-forge start",
-		"package": "electron-forge package",
-		"make": "electron-forge make",
-		"publish": "electron-forge publish",
-		"lint": "echo \"No linting configured\"",
-		"dev": "tailwindcss -o output.css --watch",
-		"build": "tailwindcss -o output.css --minify",
-		"electron-pack": "electron-builder --win -p always"
-	},
-	"build": {
-		"appId": "last.fm-rich-presence",
-		"win": {
-			"target": [
-				"nsis"
-			],
-			"icon": "src/icons/logo.ico"
-		},
-		"nsis": {
-			"installerIcon": "src/icons/logo.ico",
-			"uninstallerIcon": "src/icons/uninstall.ico",
-			"uninstallDisplayName": "Last.fm Rich Presence",
-			"oneClick": false,
-			"allowToChangeInstallationDirectory": true
-		}
-	},
-	"keywords": [
-		"Last.fm",
-		"Discord",
-		"Rich",
-		"Presence",
-		"JavaScript",
-		"Elegant",
-		"Efficient",
-		"Easy-to-setup"
-	],
-	"author": {
-		"name": "Monochromish"
-	},
-	"license": "MIT",
-	"config": {
-		"forge": {
-			"packagerConfig": {},
-			"makers": [
-				{
-					"name": "@electron-forge/maker-squirrel",
-					"config": {
-						"name": "last.fm-rich-presence"
-					}
-				},
-				{
-					"name": "@electron-forge/maker-zip",
-					"platforms": [
-						"darwin"
-					]
-				},
-				{
-					"name": "@electron-forge/maker-deb",
-					"config": {}
-				},
-				{
-					"name": "@electron-forge/maker-rpm",
-					"config": {}
-				}
-			]
-		}
-	},
-	"dependencies": {
-		"daisyui": "^2.0.9",
-		"discord-rpc": "^4.0.1",
-		"electron-squirrel-startup": "^1.0.0",
-		"express": "^4.17.1",
-		"pretty-ms": "^7.0.1",
-		"request": "^2.88.2",
-		"request-promise": "^4.2.6",
-		"tailwindcss": "^3.0.23"
-	},
-	"devDependencies": {
-		"@electron-forge/cli": "^6.0.0-beta.54",
-		"@electron-forge/maker-deb": "^6.0.0-beta.54",
-		"@electron-forge/maker-rpm": "^6.0.0-beta.54",
-		"@electron-forge/maker-squirrel": "^6.0.0-beta.55",
-		"@electron-forge/maker-zip": "^6.0.0-beta.54",
-		"daisyui": "latest",
-		"electron": "12.0.7",
-		"tailwindcss": "latest"
-	}
+  "name": "last.fm-rich-presence",
+  "productName": "Last.fm Rich Presence",
+  "version": "1.0.6",
+  "description": "An elegant, efficient, easy-to-setup and arguably the best Last.fm discord rich presence!",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "electron-pack": "electron-builder --win -p always"
+  },
+  "build": {
+    "appId": "last.fm-rich-presence",
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "src/icons/logo.ico"
+    },
+    "nsis": {
+      "installerIcon": "src/icons/logo.ico",
+      "uninstallerIcon": "src/icons/uninstall.ico",
+      "uninstallDisplayName": "Last.fm Rich Presence",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "keywords": [
+    "Last.fm",
+    "Discord",
+    "Rich",
+    "Presence",
+    "JavaScript",
+    "Elegant",
+    "Efficient",
+    "Easy-to-setup"
+  ],
+  "contributors": [
+    "Nathan Olson <nathanieljay216@gmail.com> (https://felid.work)",
+    "Monochromish"
+  ],
+  "license": "MIT",
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "last.fm-rich-presence"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "daisyui": "^2.0.9",
+    "discord-rpc": "^4.0.1",
+    "electron-squirrel-startup": "^1.0.1",
+    "express": "^4.17.1",
+    "pretty-ms": "^7.0.1",
+    "request": "^2.88.2",
+    "request-promise": "^0.0.1",
+    "tailwindcss": "^3.0.23"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.4.2",
+    "@electron-forge/maker-deb": "^6.4.2",
+    "@electron-forge/maker-rpm": "^6.4.2",
+    "@electron-forge/maker-squirrel": "^6.4.2",
+    "@electron-forge/maker-zip": "^6.4.2",
+    "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
+    "daisyui": "latest",
+    "electron": "^39.2.4",
+    "tailwindcss": "latest"
+  }
 }
