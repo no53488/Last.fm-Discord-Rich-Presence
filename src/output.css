@@ -99,6 +99,7 @@ select {
 [type='submit'],
 button {
 	-webkit-appearance: button;
+    appearance: button;
 	background-color: initial;
 	background-image: none;
 }
@@ -117,6 +118,7 @@ progress {
 }
 [type='search'] {
 	-webkit-appearance: textfield;
+    appearance: textfield;
 	outline-offset: -2px;
 }
 ::-webkit-search-decoration {
@@ -195,7 +197,6 @@ object,
 svg,
 video {
 	display: block;
-	vertical-align: middle;
 }
 img.center {
 	display: block;
