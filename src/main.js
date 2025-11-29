@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Tray, Menu, shell, Notification } = require('electron');
+const { app, BrowserWindow, Tray, Menu, shell, Notification } = require('electron/main');
 const path = require('path');
 const DiscordRPC = require('discord-rpc');
 const fetch = require('request-promise');
@@ -145,7 +145,7 @@ server.post('/api/post-presence', (req, res) => {
 	}
 });
 
-app.on('ready', function () {
+app.whenReady().then(() => {
 	let isQuiting;
 
 	app.on('before-quit', function () {
@@ -190,6 +190,7 @@ app.on('ready', function () {
 	});
 
 	appIcon = new Tray(iconPath);
+
 	var contextMenu = Menu.buildFromTemplate([
 		{
 			label: 'Show App', click: () => mainWindow.show()
@@ -205,6 +206,7 @@ app.on('ready', function () {
 			app.quit()
 		} }
 	]);
+
 	appIcon.setToolTip('Last.fm Rich Presence');
 	appIcon.setContextMenu(contextMenu);
 });
