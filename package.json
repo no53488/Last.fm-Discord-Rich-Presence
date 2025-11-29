@@ -3,7 +3,7 @@
   "productName": "Last.fm Rich Presence",
   "version": "1.0.6",
   "description": "An elegant, efficient, easy-to-setup and arguably the best Last.fm discord rich presence!",
-  "main": "src/index.js",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -38,8 +38,8 @@
     "Easy-to-setup"
   ],
   "contributors": [
-    "Nathan Olson <nathanieljay216@gmail.com> (https://felid.work)",
-    "Monochromish"
+    "Monochromish",
+    "Nathan Olson <nathanieljay216@gmail.com> (https://felid.work)"
   ],
   "license": "MIT",
   "config": {
