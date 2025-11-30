@@ -1,14 +1,12 @@
 const { app, BrowserWindow, Tray, Menu, shell, Notification } = require('electron/main');
 const path = require('path');
 const DiscordRPC = require('discord-rpc');
-const fetch = require('request-promise');
+const fetch = require('node-request');
 const prettyMilliseconds = require('pretty-ms');
 const express = require('express');
 const server = express();
-const fs = require('fs');
 
 const iconPath = path.join(__dirname, './icons/logo.ico');
-const confPath = path.join(app.getAppPath(), 'config.json');
 
 let appIcon = null;
 let status = false;
@@ -167,6 +165,8 @@ app.whenReady().then(() => {
 		show: false,
 		autoHideMenuBar: true.valueOf,
 		webPreferences: {
+            preload: path.join(__dirname, "preload.js"),
+            contextIsolation: true,
 			nodeIntegration: true,
 			enableRemoteModule: true
 		}
