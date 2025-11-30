@@ -52,30 +52,61 @@
         <p>Noticed a typo, an error, or want to contribute? open a new issue on <a href="https://github.com/Monochromish/Last.fm-Discord-Rich-Presence">GitHub</p>
       </div>
     </footer>
-      <script>
-      const form = document.getElementById('post-presence')
-      form.addEventListener('submit', startrpc)
-      async function startrpc(event) {
-        event.preventDefault();
+        <script>
+        const form = document.getElementById('post-presence')
         const clientid = document.getElementById('clientid').value || '936982107106967602';
         const username = document.getElementById('username').value;
         const key = document.getElementById('key').value;
-        const result = await fetch('http://localhost:3000/api/post-presence', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            clientid,
-            username,
-            key
-          })
-        }).then((res) => res.json())
-        console.log(result)
-        if(result.status !== "ok") {
-          alert(result.error)
+        form.addEventListener('submit', startrpc)
+        async function startrpc(event) {
+            event.preventDefault();
+            readConfig();
+            writeConfig(clientid,username,key);
+
+            const result = await fetch('http://localhost:3000/api/post-presence', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                clientid,
+                username,
+                key
+            })
+            }).then((res) => res.json())
+            console.log(result)
+            if(result.status !== "ok") {
+            alert(result.error)
+            }
         }
-      }
+        config = {};
+        async function readConfig() {
+            try {
+                if (!fs.existsSync(confPath)) {
+                    return {};
+                }
+                const raw = fs.readFileSync(configPath, 'utf-8');
+                config = JSON.parse(raw);
+            } catch (err) {
+                return {};
+            }
+
+
+        }
+        async function writeConfig(clientid,username,key) {
+            try {
+                if (!fs.existsSync(confPath)) {
+                    return {};
+                }
+                const raw = fs.readFileSync(configPath, 'utf-8');
+                config = JSON.parse(raw);
+                fs.writeFileSync(configPath, JSON.stringify(clientid, username, key), 'utf-8');
+            } catch (err) {
+                return {};
+            }
+            
+            
+        }
       </script>
 </center>
 </html>

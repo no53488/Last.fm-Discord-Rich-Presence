@@ -5,8 +5,10 @@ const fetch = require('request-promise');
 const prettyMilliseconds = require('pretty-ms');
 const express = require('express');
 const server = express();
+const fs = require('fs');
 
 const iconPath = path.join(__dirname, './icons/logo.ico');
+const confPath = path.join(app.getAppPath(), 'config.json');
 
 let appIcon = null;
 let status = false;
