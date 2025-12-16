@@ -88,6 +88,7 @@
     "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
     "daisyui": "latest",
     "electron": "^39.2.4",
-    "tailwindcss": "latest"
+    "tailwindcss": "latest",
+    "@tailwindcss/cli": "^4.1.18"
   }
 }
