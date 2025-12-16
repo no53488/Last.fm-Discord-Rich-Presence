@@ -137,7 +137,7 @@ app.whenReady().then(() => {
 	const mainWindow = new BrowserWindow({
 		autoHideMenuBar: false,
 		width: 1280,
-		height: 660,
+		height: 720,
 		minWidth: 1024,
 		minHeight: 550,
 		maximizable: true,
