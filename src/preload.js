@@ -1,20 +1,46 @@
+const { contextBridge, app } = require("electron");
 const fs = require("fs");
 const path = require("path");
-const { contextBridge, app } = require("electron");
 
-const configPath = path.join(app.getPath("userData"), "config.json");
+const ipc = {
+    'render': {
+        // From render to main.
+        'send': [
+            'config:updateConfig' // Example only
+        ],
+        // From main to render.
+        'receive': [
+            'config:showConfig' // Exmaple only
+        ],
+        // From render to main and back again.
+        'sendReceive': []
+    }
+};
 
-function readConfig() {
-    if (!fs.existsSync(configPath)) return {};
-    const raw = fs.readFileSync(configPath, "utf8");
-    return JSON.parse(raw);
-}
-
-function writeConfig(config) {
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2), "utf8");
-}
-
-contextBridge.exposeInMainWorld("configApi", {
-    read: readConfig,
-    write: writeConfig
-});
+contextBridge.exposeInMainWorld(
+    // Allowed 'ipcRenderer' methods.
+    'ipcRender', {
+        // From render to main.
+        send: (channel, args) => {
+            let validChannels = ipc.render.send;
+            if (validChannels.includes(channel)) {
+                ipcRenderer.send(channel, args);
+            }
+        },
+        // From main to render.
+        receive: (channel, listener) => {
+            let validChannels = ipc.render.receive;
+            if (validChannels.includes(channel)) {
+                // Deliberately strip event as it includes `sender`
+                ipcRenderer.on(channel, (event, ...args) => listener(...args));
+            }
+        },
+        // From render to main and back again.
+        invoke: (channel, args) => {
+            let validChannels = ipc.render.sendReceive;
+            if (validChannels.includes(channel)) {
+                return ipcRenderer.invoke(channel, args);
+            }
+        }
+    }
+);

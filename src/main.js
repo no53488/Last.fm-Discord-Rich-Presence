@@ -1,7 +1,6 @@
 const { app, BrowserWindow, Tray, Menu, shell, Notification } = require('electron/main');
 const path = require('path');
 const DiscordRPC = require('discord-rpc');
-const fetch = require('node-request');
 const prettyMilliseconds = require('pretty-ms');
 const express = require('express');
 const server = express();
@@ -34,67 +33,51 @@ server.post('/api/post-presence', (req, res) => {
 		status = true;
 		console.log('Started Rich Presence');
 		async function fetchCurrentScrobble() {
-			var TrackOptions = {
-				uri: 'http://ws.audioscrobbler.com/2.0/',
-				json: true,
-				qs: {
-					method: 'user.getrecenttracks',
-					user: username,
-					api_key: key,
-					format: 'json',
-					limit: '1'
-				}
-			};
+			
+            var GetRecentTrackCall = new Request(`http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${key}&format=json&limit=1`);
 
-			var lastTrack = await fetch(TrackOptions);
-			if (!lastTrack)
+            const RecentsResponse = await fetch(GetRecentTrackCall);
+            const RecentTracks = await RecentsResponse.json();
+
+			/*if (!RecentTracks)
 				return console.log(
 					'An unexpected error occurred while fetching\nPlease check if the Last.fm username provided is correct\nRetrying in 30 seconds...'
-				);
+			);*/
+            
+            let lastArtist = RecentTracks.recenttracks.track[0].artist['#text'];
+            let lastTrackName = RecentTracks.recenttracks.track[0].name;
 
-			let lastArtist = lastTrack.recenttracks.track[0].artist['#text'];
-			let lastTrackName = lastTrack.recenttracks.track[0].name;
+			var GetTrackInfo = new Request(`http://ws.audioscrobbler.com/2.0/?method=track.getInfo&user=${username}&api_key=${key}&artist=${lastArtist}&track=${lastTrackName}&format=json`);
+            
+			var fetchedTrack = await fetch(GetTrackInfo);
+            var lastTrack = await fetchedTrack.json();
 
-			var UserOptions = {
-				uri: 'http://ws.audioscrobbler.com/2.0/',
-				json: true,
-				qs: {
-					method: 'track.getInfo',
-					user: username,
-					track: lastTrackName,
-					artist: lastArtist,
-					api_key: key,
-					format: 'json'
-				}
-			};
-
-			var fetchedData = await fetch(UserOptions);
-			if (fetchedData.message && fetchedData.message === 'Track not found') {
+			if (lastTrack.message && lastTrack.message === 'Track not found') {
 				var data = {
-					artist: lastTrack.recenttracks.track[0].artist['#text'],
-					album: lastTrack.recenttracks.track[0].album['#text'],
-					trackName: lastTrack.recenttracks.track[0].name,
-					trackUrl: lastTrack.recenttracks.track[0].url,
+					artist: lastTrack.track.artist.name,
+					album: lastTrack.track.album.title,
+					trackName: lastTrack.track.name,
+					trackUrl: lastTrack.track.url,
 					playcount: '0',
-					scrobbleStatus: !lastTrack.recenttracks.track[0]['@attr']
-						? `Last scrobbled ${prettyMilliseconds(Date.now() - lastTrack.recenttracks.track[0].date.uts * 1000)} ago
+					scrobbleStatus: !lastTrack.track['@attr']
+						? `Last scrobbled ${prettyMilliseconds(Date.now() - lastTrack.track.date.uts * 1000)} ago
 				`
 						: 'Now scrobbling',
-					cover: lastTrack.recenttracks.track[0].image[lastTrack.recenttracks.track[0].image.length - 1]['#text']
+					cover: lastTrack.track.image[lastTrack.track.image.length - 1]['#text']
 				};
 			} else {
 				var data = {
-					artist: lastTrack.recenttracks.track[0].artist['#text'],
-					album: lastTrack.recenttracks.track[0].album['#text'],
-					trackName: lastTrack.recenttracks.track[0].name,
-					trackUrl: lastTrack.recenttracks.track[0].url,
-					playcount: fetchedData.track.userplaycount ? fetchedData.track.userplaycount : '0',
-					scrobbleStatus: !lastTrack.recenttracks.track[0]['@attr']
-						? `Last scrobbled ${prettyMilliseconds(Date.now() - lastTrack.recenttracks.track[0].date.uts * 1000)} ago
+					artist: lastTrack.track.artist.name,
+					album: lastTrack.track.album.title,
+					trackName: lastTrack.track.name,
+					trackUrl: lastTrack.track.url,
+					playcount: lastTrack.track.userplaycount ? lastTrack.track.userplaycount : '0',
+					scrobbleStatus: !lastTrack.track['@attr']
+						? `Last scrobbled ${prettyMilliseconds(Date.now() - RecentTracks.recenttracks.track[0].date.uts * 1000)} ago
 					`
 						: 'Now scrobbling',
 					cover:
-						lastTrack.recenttracks.track[0].image[lastTrack.recenttracks.track[0].image.length - 1]['#text'] ||
+						lastTrack.track.album.image[2]['#text'] ||
 						'https://lastfm.freetls.fastly.net/i/u/64s/2a96cbd8b46e442fc41c2b86b821562f.png' // Fixed no album bug - https://github.com/Monochromish/Last.fm-Discord-Rich-Presence/issues/3#issue-1157573199
 				};
 			}
@@ -104,12 +87,11 @@ server.post('/api/post-presence', (req, res) => {
 		//Status update function
 		async function updateStatus() {
 			var data = await fetchCurrentScrobble();
-
+            console.log(data);
 			// Verifying Data
 			let detailsStatus = 'Listening to';
 			if (data.scrobbleStatus !== 'Now scrobbling') detailsStatus = `Was ${detailsStatus}`;
 			let albumName = data.album;
-			if (data.album.length < 2) albumName = `${albumName}  `;
 
 			client
 				.setActivity({
