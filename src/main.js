@@ -47,7 +47,7 @@ server.post('/api/post-presence', (req, res) => {
                 return null;
             }
         }else{
-            var config = JSON.parse(fs.writeFileSync(confPath, JSON.stringify({username,key},null,2), 'utf-8'));
+            fs.writeFileSync(confPath, JSON.stringify({username,key},null,2), 'utf-8');
             console.log({username,key}, "saved to config.json.");
         }
             
