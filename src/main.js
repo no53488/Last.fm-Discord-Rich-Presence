@@ -6,7 +6,7 @@ const express = require('express');
 const server = express();
 const fs = require('fs');
 const iconPath = path.join(__dirname, './icons/logo.ico');
-
+app.setAppUserModelId("com.squirrel.lastfm-rich-presence.lastfm-rich-presence");
 let appIcon = null;
 let status = false;
 

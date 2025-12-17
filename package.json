@@ -1,7 +1,7 @@
 {
   "name": "last.fm-rich-presence",
   "productName": "Last.fm Rich Presence",
-  "version": "1.0.6",
+  "version": "1.1.1",
   "description": "An elegant, efficient, easy-to-setup and arguably the best Last.fm discord rich presence!",
   "main": "src/main.js",
   "scripts": {
@@ -43,33 +43,7 @@
     "Nathan Olson <nathanieljay216@gmail.com> (https://felid.work)"
   ],
   "license": "MIT",
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "last.fm-rich-presence"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
-    }
-  },
+  "config": {},
   "dependencies": {
     "discord-rpc": "^4.0.1",
     "electron-squirrel-startup": "^1.0.1",
@@ -85,6 +59,7 @@
     "@electron-forge/maker-squirrel": "^6.4.2",
     "@electron-forge/maker-zip": "^6.4.2",
     "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
+    "@electron-forge/publisher-github": "^7.10.2",
     "@tailwindcss/cli": "^4.1.18",
     "daisyui": "^5.5.14",
     "electron": "^39.2.7",
