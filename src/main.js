@@ -4,7 +4,7 @@ const DiscordRPC = require('discord-rpc');
 const prettyMilliseconds = require('pretty-ms');
 const express = require('express');
 const server = express();
-
+const fs = require('fs');
 const iconPath = path.join(__dirname, './icons/logo.ico');
 
 let appIcon = null;
@@ -23,7 +23,7 @@ client.on('error', error => {
 
 //Fetch function
 server.post('/api/post-presence', (req, res) => {
-	const { clientid, username, key } = req.body;
+	var { clientid, username, key } = req.body;
 	if (status === true) {
 		client.clearActivity().then(() => {
 			status = false;
@@ -32,7 +32,28 @@ server.post('/api/post-presence', (req, res) => {
 	} else {
 		status = true;
 		console.log('Started Rich Presence');
-		async function fetchCurrentScrobble() {
+        const confPath = path.join(app.getPath('userData'), 'config.json');
+        
+        if (username === ''|key ==='') {
+            try {
+                var config = JSON.parse(fs.readFileSync(confPath, 'utf-8'));
+                if (config.username && config.key) {
+                    username = config.username;
+                    key = config.key;
+                    console.log({username,key});
+                }
+            } catch (error) {
+                console.log(error);
+                return null;
+            }
+        }else{
+            var config = JSON.parse(fs.writeFileSync(confPath, JSON.stringify({username,key},null,2), 'utf-8'));
+            console.log({username,key}, "saved to config.json.");
+        }
+            
+        
+		
+        async function fetchCurrentScrobble() {
 			
             var GetRecentTrackCall = new Request(`http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${key}&format=json&limit=1`);
 
@@ -43,7 +64,9 @@ server.post('/api/post-presence', (req, res) => {
 				return console.log(
 					'An unexpected error occurred while fetching\nPlease check if the Last.fm username provided is correct\nRetrying in 30 seconds...'
 			);*/
-            
+            //https://www.last.fm/music/Car+Seat+Headrest/Monomania/Los+Barrachos+(I+Don%27t+Have+Any+Hope+Left,+But+the+Weather+is+Nice)
+            //https://www.last.fm/music/Car+Seat+Headrest/_/Los+Borrachos+(I+Don%E2%80%99t+Have+Any+Hope+Left,+But+The+Weather+Is+Nice)
+            console.log(RecentTracks);
             let lastArtist = RecentTracks.recenttracks.track[0].artist['#text'];
             let lastTrackName = RecentTracks.recenttracks.track[0].name;
 
@@ -66,9 +89,10 @@ server.post('/api/post-presence', (req, res) => {
 					cover: lastTrack.track.image[lastTrack.track.image.length - 1]['#text']
 				};
 			} else {
+                console.log(lastTrack);
 				var data = {
 					artist: lastTrack.track.artist.name,
-					album: lastTrack.track.album.title,
+					album: lastTrack.track.album?.title ?? lastTrack.track.name,
 					trackName: lastTrack.track.name,
 					trackUrl: lastTrack.track.url,
 					playcount: lastTrack.track.userplaycount ? lastTrack.track.userplaycount : '0',
@@ -77,7 +101,7 @@ server.post('/api/post-presence', (req, res) => {
 					`
 						: 'Now scrobbling',
 					cover:
-						lastTrack.track.album.image[2]['#text'] ||
+						lastTrack.track.album?.image[2]['#text'] ||
 						'https://lastfm.freetls.fastly.net/i/u/64s/2a96cbd8b46e442fc41c2b86b821562f.png' // Fixed no album bug - https://github.com/Monochromish/Last.fm-Discord-Rich-Presence/issues/3#issue-1157573199
 				};
 			}
@@ -87,7 +111,6 @@ server.post('/api/post-presence', (req, res) => {
 		//Status update function
 		async function updateStatus() {
 			var data = await fetchCurrentScrobble();
-            console.log(data);
 			// Verifying Data
 			let detailsStatus = 'Listening to';
 			if (data.scrobbleStatus !== 'Now scrobbling') detailsStatus = `Was ${detailsStatus}`;
