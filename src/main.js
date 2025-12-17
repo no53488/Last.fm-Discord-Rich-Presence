@@ -60,13 +60,9 @@ server.post('/api/post-presence', (req, res) => {
             const RecentsResponse = await fetch(GetRecentTrackCall);
             const RecentTracks = await RecentsResponse.json();
 
-			/*if (!RecentTracks)
-				return console.log(
-					'An unexpected error occurred while fetching\nPlease check if the Last.fm username provided is correct\nRetrying in 30 seconds...'
-			);*/
-            //https://www.last.fm/music/Car+Seat+Headrest/Monomania/Los+Barrachos+(I+Don%27t+Have+Any+Hope+Left,+But+the+Weather+is+Nice)
-            //https://www.last.fm/music/Car+Seat+Headrest/_/Los+Borrachos+(I+Don%E2%80%99t+Have+Any+Hope+Left,+But+The+Weather+Is+Nice)
+			
             console.log(RecentTracks);
+
             let lastArtist = RecentTracks.recenttracks.track[0].artist['#text'];
             let lastTrackName = RecentTracks.recenttracks.track[0].name;
 
@@ -89,7 +85,7 @@ server.post('/api/post-presence', (req, res) => {
 					cover: lastTrack.track.image[lastTrack.track.image.length - 1]['#text']
 				};
 			} else {
-                console.log(lastTrack);
+                console.log(RecentTracks.recenttracks.track);
 				var data = {
 					artist: lastTrack.track.artist.name,
 					album: lastTrack.track.album?.title ?? lastTrack.track.name,
