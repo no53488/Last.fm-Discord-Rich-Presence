@@ -1,22 +1,19 @@
 <p align="center">
 <img width="200" src="https://raw.githubusercontent.com/Monochromish/Last.fm-Discord-Rich-Presence/main/src/icons/logo.png" alt="Logo">
 <br><br>
-<img src="https://img.shields.io/github/v/release/Monochromish/Last.fm-Discord-Rich-Presence?color=302f3d&include_prereleases&style=for-the-badge" alt="Badge">
-<img src="https://img.shields.io/github/stars/Monochromish/Last.fm-Discord-Rich-Presence?color=302f3d&style=for-the-badge" alt="Badge">
-<img src="https://img.shields.io/github/forks/Monochromish/Last.fm-Discord-Rich-Presence?color=302f3d&style=for-the-badge" alt="Badge">
-<img src="https://img.shields.io/discord/946515105443610654?color=302f3d&style=for-the-badge" alt="Badge">
 </p>
 
 An elegant, efficient, easy-to-setup and arguably the best Last.fm discord rich presence! Written in Electron with daisyUI.
+Now with Persistent values!
 
 Supports GIF album covers and provides information such as `Track name`, `Track Album`, `Track Artist`, `Last Played`, `Your Scrobbles` and much more!
-Customizable and by default, it updates status every 30 seconds.
+It will update your status every 30 seconds.
 
 ## Works with
 
-This Last.FM Discord Rich Presence works with all music platforms that Last.fm supports; such as:
+This Last.FM Discord Rich Presence works with all music platforms that Last.fm supports including:
 
-- [x] Spotify - Works best
+- [x] Spotify
 - [x] iTunes or Apple Music
 - [x] Youtube
 - [x] Google Play Music
@@ -24,12 +21,8 @@ This Last.FM Discord Rich Presence works with all music platforms that Last.fm s
 - [x] Deezer
 - [x] SoundCloud
 - [x] Mixcloud
-- [x] Sonos
-- [x] Hype Machine
-- [x] 8tracks
 - [x] Bandcamp
 - [x] Pandora
-- [x] And many more!
 
 ## Requirements
 
@@ -39,14 +32,16 @@ This Last.FM Discord Rich Presence works with all music platforms that Last.fm s
 
 ## How to setup
 
-1. Download the windows binary from its [website](https://www.lastfmrichpresence.tk) or from the [releases tab](https://github.com/Monochromish/Last.fm-Discord-Rich-Presence/releases).
+1. Download the windows binary from the [releases tab](https://github.com/Monochromish/Last.fm-Discord-Rich-Presence/releases).
 2. Run the setup. If you get a **Windows SmartScreen Protection Popup**, click on the `More info` button and then click on `Run anyway` button. Complete the setup and run the application.
 3. Provide your details and then click on the `Enable/Disable` button.
+4. Your details will be saved to `%appdata$\Roaming\Last.fm Rich Presence\config.json`.
+5. Future launches of the application will read from this file, or overwrite username and key values if provided in the ui.
 
 ## Contribution and issues
 
 Feel free to fork this repository and create pull requests, I will review them when I get notified.
-To create an environment, you would have to open the root folder in a terminal and install the dependencies. Then just run `npm start` and it should open up a window if and when it's ready.
+To create an environment, you would have to open the root folder in a terminal and install the dependencies. Make sure no instances are already running, and run `npm run` to see build commands.
 
 ## Credits
 
@@ -54,5 +49,5 @@ To create an environment, you would have to open the root folder in a terminal a
 |---	|
 | [Monochromish](https://github.com/Monochromish) 	|
 
-Code for this rich presence was fully written by [Monochromish](https://monolul.me) (_at the time of writing this_) and no credits to me are being provided in the rich presence! Please share this repository to support this project.
-If you come across any errors or need help with setting up, feel free to DM me on Discord or join my [development server](https://discord.com/invite/E6z5ZmsV4m).
+Code for this rich presence was originally written by [Monochromish](https://monolul.me), and updated by [Nathan Olson](https://felid.work). Please share this repository to support this project.
+If you come across any errors or need help with setting up, feel free to reachout via email.
