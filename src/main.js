@@ -113,7 +113,6 @@ server.post('/api/post-presence', (req, res) => {
 			let detailsStatus = 'Listening to';
 			if (data.scrobbleStatus !== 'Now scrobbling') detailsStatus = `Was ${detailsStatus}`;
 			let albumName = data.album;
-			console.log(data);
 
 			client.setActivity({
 					details: `${detailsStatus} ${data.trackName}`,
@@ -131,17 +130,17 @@ server.post('/api/post-presence', (req, res) => {
 					smallImageText: data.scrobbleStatus,
 					instance: false
 			});
+			console.log("Discord Status updated.")
 		}
 		console.log("Waiting for Discord-RPC...")
-		client.on('ready',()=>{
-			updateStatus();
-		})
 
 		//Running the update status every 30 seconds
-		setInterval(function () {
+		client.on('ready',()=>{
+			setInterval(function () {
 			updateStatus();
 		}, 30000);
-		
+		})
+
 		client.login({ clientId: clientid }).then(function () {
 			updateStatus();
 		});
