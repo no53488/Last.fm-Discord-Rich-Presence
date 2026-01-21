@@ -46,6 +46,7 @@ This Last.FM Discord Rich Presence works with all music platforms that Last.fm s
 3. Your details will be saved to `%appdata$\Roaming\Last.fm Rich Presence\config.json`.
 4. Future launches of the application will read from this file, or overwrite username and key values if provided in the ui.
 
+Building a .deb for linux can be acheived locally by ensuring the requirements from [electron-makers](https://https://github.com/no53488) and running `npm run make`
 
 ## Contribution and issues
 
