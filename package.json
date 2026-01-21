@@ -1,68 +1,62 @@
 {
-  "name": "last-fm-rich-presence",
-  "productName": "Last.fm Rich Presence",
-  "version": "1.1.1",
-  "description": "An elegant, efficient, easy-to-setup and arguably the best Last.fm discord rich presence!",
-  "main": "src/main.js",
-  "scripts": {
-    "start": "electron .",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "electron-pack": "electron-builder --win -p always",
-    "build:css": "tailwindcss -i src/input.css -o public/output.css"
-  },
-  "build": {
-    "appId": "last.fm-rich-presence",
-    "win": {
-      "target": [
-        "nsis"
-      ],
-      "icon": "src/icons/logo.ico"
+    "name": "last-fm-rich-presence",
+    "productName": "Last.fm Rich Presence",
+    "version": "1.1.1",
+    "description": "An elegant, efficient, easy-to-setup and arguably the best Last.fm discord rich presence!",
+    "main": "src/main.js",
+    "scripts": {
+        "start": "electron .",
+        "package": "electron-forge package",
+        "make": "electron-forge make",
+        "publish": "electron-forge publish",
+        "electron-pack": "electron-builder --win -p always",
+        "build:css": "tailwindcss -i src/input.css -o public/output.css"
     },
-    "nsis": {
-      "installerIcon": "src/icons/logo.ico",
-      "uninstallerIcon": "src/icons/uninstall.ico",
-      "uninstallDisplayName": "Last.fm Rich Presence",
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+    "build": {
+        "appId": "last.fm-rich-presence",
+        "win": {
+            "target": [
+                "nsis"
+            ],
+            "icon": "src/icons/logo.ico"
+        },
+        "nsis": {
+            "installerIcon": "src/icons/logo.ico",
+            "uninstallerIcon": "src/icons/uninstall.ico",
+            "uninstallDisplayName": "Last.fm Rich Presence",
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true
+        }
+    },
+    "keywords": [
+        "Last.fm",
+        "Discord",
+        "Rich",
+        "Presence",
+        "JavaScript",
+        "Elegant",
+        "Efficient",
+        "Easy-to-setup"
+    ],
+    "contributors": [
+        "Monochromish",
+        "Nathan Olson <nathanieljay216@gmail.com> (https://felid.work)"
+    ],
+    "license": "MIT",
+    "config": {},
+    "dependencies": {
+        "discord-rpc": "^4.0.1",
+        "electron-squirrel-startup": "^1.0.1",
+        "express": "^4.17.1",
+        "fs": "^0.0.1-security",
+        "glob": "^13.0.0",
+        "pretty-ms": "^7.0.1",
+        "request-promise": "^0.0.1"
+    },
+    "devDependencies": {
+        "@tailwindcss/cli": "^4.1.18",
+        "daisyui": "^5.5.14",
+        "electron": "^40.0.0",
+        "tailwindcss": "^4.1.18"
     }
-  },
-  "keywords": [
-    "Last.fm",
-    "Discord",
-    "Rich",
-    "Presence",
-    "JavaScript",
-    "Elegant",
-    "Efficient",
-    "Easy-to-setup"
-  ],
-  "contributors": [
-    "Monochromish",
-    "Nathan Olson <nathanieljay216@gmail.com> (https://felid.work)"
-  ],
-  "license": "MIT",
-  "config": {},
-  "dependencies": {
-    "discord-rpc": "^4.0.1",
-    "electron-squirrel-startup": "^1.0.1",
-    "express": "^4.17.1",
-    "fs": "^0.0.1-security",
-    "pretty-ms": "^7.0.1",
-    "request-promise": "^0.0.1"
-  },
-  "devDependencies": {
-    "@electron-forge/cli": "^6.4.2",
-    "@electron-forge/maker-deb": "^6.4.2",
-    "@electron-forge/maker-rpm": "^6.4.2",
-    "@electron-forge/maker-squirrel": "^6.4.2",
-    "@electron-forge/maker-zip": "^6.4.2",
-    "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
-    "@electron-forge/publisher-github": "^7.10.2",
-    "@tailwindcss/cli": "^4.1.18",
-    "daisyui": "^5.5.14",
-    "electron": "^39.2.7",
-    "tailwindcss": "^4.1.18"
-  }
 }
