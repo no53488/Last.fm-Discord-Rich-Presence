@@ -6,9 +6,13 @@ const express = require('express');
 const server = express();
 const fs = require('fs');
 const iconPath = path.join(__dirname, './icons/logo.ico');
+const confPath = path.join(app.getPath('userData'), 'config.json');
+const config = JSON.parse(fs.readFileSync(confPath, 'utf-8'));
 app.setAppUserModelId("com.squirrel.lastfm-rich-presence.lastfm-rich-presence");
 let appIcon = null;
 let status = false;
+let backupUsername = config.username;
+let backupKey = config.key;
 
 if (require('electron-squirrel-startup')) {
 	app.quit();
@@ -32,11 +36,9 @@ server.post('/api/post-presence', (req, res) => {
 	} else {
 		status = true;
 		console.log('Started Rich Presence');
-        const confPath = path.join(app.getPath('userData'), 'config.json');
         
         if (username === ''|key ==='') {
             try {
-                var config = JSON.parse(fs.readFileSync(confPath, 'utf-8'));
                 if (config.username && config.key) {
                     username = config.username;
                     key = config.key;
@@ -56,13 +58,15 @@ server.post('/api/post-presence', (req, res) => {
         async function fetchCurrentScrobble() {
 			
             var GetRecentTrackCall = new Request(`http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${key}&format=json&limit=1`);
-
             const RecentsResponse = await fetch(GetRecentTrackCall);
             const RecentTracks = await RecentsResponse.json();
 
+			if(RecentTracks.error){
+				console.log(`Error ${RecentTracks.error} \n${RecentTracks.message}`);
+				return null;
+			}
 			
-            console.log(RecentTracks);
-
+			
             let lastArtist = RecentTracks.recenttracks.track[0].artist['#text'];
             let lastTrackName = RecentTracks.recenttracks.track[0].name;
 
@@ -85,16 +89,14 @@ server.post('/api/post-presence', (req, res) => {
 					cover: lastTrack.track.image[lastTrack.track.image.length - 1]['#text']
 				};
 			} else {
-                console.log(RecentTracks.recenttracks.track);
 				var data = {
 					artist: lastTrack.track.artist.name,
 					album: lastTrack.track.album?.title ?? lastTrack.track.name,
 					trackName: lastTrack.track.name,
 					trackUrl: lastTrack.track.url,
 					playcount: lastTrack.track.userplaycount ? lastTrack.track.userplaycount : '0',
-					scrobbleStatus: !lastTrack.track['@attr']
-						? `Last scrobbled ${prettyMilliseconds(Date.now() - RecentTracks.recenttracks.track[0].date.uts * 1000)} ago
-					`
+					scrobbleStatus: (!lastTrack.track['@attr'] && RecentTracks.recenttracks.track[0]?.date?.uts)
+						? `Last scrobbled ${prettyMilliseconds(Date.now() - RecentTracks.recenttracks.track[0].date.uts * 1000)} ago`
 						: 'Now scrobbling',
 					cover:
 						lastTrack.track.album?.image[2]['#text'] ||
@@ -111,9 +113,9 @@ server.post('/api/post-presence', (req, res) => {
 			let detailsStatus = 'Listening to';
 			if (data.scrobbleStatus !== 'Now scrobbling') detailsStatus = `Was ${detailsStatus}`;
 			let albumName = data.album;
+			console.log(data);
 
-			client
-				.setActivity({
+			client.setActivity({
 					details: `${detailsStatus} ${data.trackName}`,
 					buttons: [
 						{
@@ -128,18 +130,18 @@ server.post('/api/post-presence', (req, res) => {
 						'https://raw.githubusercontent.com/Monochromish/Last.fm-Discord-Rich-Presence/main/assets/play.gif',
 					smallImageText: data.scrobbleStatus,
 					instance: false
-				})
-				.then(() => {
-					console.log('Updating Rich Presence');
-				});
+			});
 		}
+		console.log("Waiting for Discord-RPC...")
+		client.on('ready',()=>{
+			updateStatus();
+		})
 
 		//Running the update status every 30 seconds
 		setInterval(function () {
 			updateStatus();
 		}, 30000);
-
-		//Logging in RPC
+		
 		client.login({ clientId: clientid }).then(function () {
 			updateStatus();
 		});
