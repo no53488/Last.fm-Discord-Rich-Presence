@@ -53,6 +53,7 @@
     },
     "devDependencies": {
         "@electron-forge/maker-deb": "^7.11.1",
+        "@electron-forge/maker-flatpak": "^7.11.1",
         "@tailwindcss/cli": "^4.1.18",
         "daisyui": "^5.5.14",
         "electron": "^40.0.0",
