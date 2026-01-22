@@ -3,7 +3,10 @@
   "productName": "Last.fm Rich Presence",
   "version": "1.1.1",
   "description": "An elegant, efficient, easy-to-setup and arguably the best Last.fm discord rich presence!",
-  "main": "src/main.js",
+  "main": "src/main.js",  
+  "packagerConfig": {
+      "executableName": "LastFM-RPC"
+  },
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -53,6 +56,7 @@
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.11.1",
+    "@electron-forge/maker-deb": "^7.11.1",
     "@electron-forge/maker-flatpak": "^7.11.1",
     "@electron-forge/maker-squirrel": "^7.11.1",
     "@electron-forge/maker-zip": "^7.11.1",
