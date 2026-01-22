@@ -41,10 +41,12 @@ This Last.FM Discord Rich Presence works with all music platforms that Last.fm s
 
 ### Linux
 
-1. Download and run the linux binary from the [releases tab](https://github.com/no53488/Last.fm-Discord-Rich-Presence/releases/tag/Releases)
-2. Provide your details and then click on the `Enable/Disable` button.
-3. Your details will be saved to `%appdata$\Roaming\Last.fm Rich Presence\config.json`.
-4. Future launches of the application will read from this file, or overwrite username and key values if provided in the ui.
+1. Clone this repository, and optionally set the origin to this repository
+2. Install Dependencies with `npm i`
+3. Optionally use `npm run build:css` to enable app theming.
+4. Provide your details and then click on the `Enable/Disable` button.
+5. Your details will be saved to `$XDG_CONFIG_HOME\Last.fm Rich Presence\config.json`.
+6. Future launches of the application will read from this file, or overwrite username and key values if provided in the ui.
 
 Building a .deb for linux can be acheived locally by ensuring the requirements from [electron-makers](https://https://github.com/no53488) and running `npm run make`
 
