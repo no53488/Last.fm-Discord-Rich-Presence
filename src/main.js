@@ -6,11 +6,11 @@ const express = require('express');
 const server = express();
 const fs = require('fs');
 const iconPath = path.join(__dirname, './icons/logo.ico');
-app.setAppUserModelId("com.squirrel.lastfm-rich-presence.lastfm-rich-presence");
+let keyBackup;
+let userBackup;
 let appIcon = null;
 let status = false;
-//let backupUsername = config.username;
-//let backupKey = config.key;
+app.setAppUserModelId("com.squirrel.lastfm-rich-presence.lastfm-rich-presence");
 
 if (require('electron-squirrel-startup')) {
 	app.quit();
@@ -36,13 +36,14 @@ server.post('/api/post-presence', (req, res) => {
 		console.log('Started Rich Presence');
         const confPath = path.join(app.getPath('userData'), 'config.json');
 
-        if ((username === ''|key ==='')&& fs.existsSync(confPath)) {
+        if (key ==='' && fs.existsSync(confPath)) {
             try {
                 const config = JSON.parse(fs.readFileSync(confPath, 'utf-8'));
-                if (config.username && config.key) {
-                    username = config.username;
-                    key = config.key;
-                    console.log({username,key});
+                if (config.key) {
+                    key = keyBackup = config.key;
+                }
+                if(config.username && username ===''){
+                    username = userBackup = config.username;
                 }
             } catch (error) {
                 console.log(error);
@@ -58,27 +59,41 @@ server.post('/api/post-presence', (req, res) => {
         
 		
         async function fetchCurrentScrobble() {
-			
             var GetRecentTrackCall = new Request(`http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${key}&format=json&limit=1`);
             const RecentsResponse = await fetch(GetRecentTrackCall);
             const RecentTracks = await RecentsResponse.json();
 
+            //If API key is invalid, try after restoring previous api value from config, if it exists.
 			if(RecentTracks.error){
-				console.log(`Error ${RecentTracks.error} \n${RecentTracks.message}`);
-				return null;
+				console.log(`Error ${RecentTracks.error}, ${RecentTracks.message}`);
+                if(RecentTracks.error == 10 && keyBackup != key){
+                    // Try to keep newest username, if provided.
+                    console.log("AJSOD")
+                    if(username !=''){
+                        fs.writeFileSync(confPath, JSON.stringify({username,keyBackup},null,2), 'utf-8');
+                        console.log("API retured invalid API key, Restored Config.json");
+                        key = keyBackup;
+                    }else if (userBackup != '' && keyBackup != ''){
+                        fs.writeFileSync(confPath, JSON.stringify({userBackup,keyBackup},null,2), 'utf-8');
+                        console.log("API retured invalid API key, Restored Config.json");
+                        key = keyBackup;
+                        username = userBackup;
+                    }else{
+                        console.log("API retured invalid API key, Could not restore Config.json");
+                    }
+                }
 			}
-			
 			
             let lastArtist = RecentTracks.recenttracks.track[0].artist['#text'];
             let lastTrackName = RecentTracks.recenttracks.track[0].name;
-
-			var GetTrackInfo = new Request(`http://ws.audioscrobbler.com/2.0/?method=track.getInfo&user=${username}&api_key=${key}&artist=${lastArtist}&track=${lastTrackName}&format=json`);
+			let GetTrackInfo = new Request(`http://ws.audioscrobbler.com/2.0/?method=track.getInfo&user=${username}&api_key=${key}&artist=${lastArtist}&track=${lastTrackName}&format=json`);
             
-			var fetchedTrack = await fetch(GetTrackInfo);
-            var lastTrack = await fetchedTrack.json();
-
+			let fetchedTrack = await fetch(GetTrackInfo);
+            let lastTrack = await fetchedTrack.json();
+            console.log(lastTrack, RecentTracks)
+            let data;
 			if (lastTrack.message && lastTrack.message === 'Track not found') {
-				var data = {
+				data = {
 					artist: lastTrack.track.artist.name,
 					album: lastTrack.track.album.title,
 					trackName: lastTrack.track.name,
@@ -91,7 +106,7 @@ server.post('/api/post-presence', (req, res) => {
 					cover: lastTrack.track.image[lastTrack.track.image.length - 1]['#text']
 				};
 			} else {
-				var data = {
+				data = {
 					artist: lastTrack.track.artist.name,
 					album: lastTrack.track.album?.title ?? lastTrack.track.name,
 					trackName: lastTrack.track.name,
@@ -110,7 +125,7 @@ server.post('/api/post-presence', (req, res) => {
 
 		//Status update function
 		async function updateStatus() {
-			var data = await fetchCurrentScrobble();
+			let data = await fetchCurrentScrobble();
 			// Verifying Data
 			let detailsStatus = 'Listening to';
 			if (data.scrobbleStatus !== 'Now scrobbling') detailsStatus = `Was ${detailsStatus}`;
