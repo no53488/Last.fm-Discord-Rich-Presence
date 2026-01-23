@@ -6,13 +6,11 @@ const express = require('express');
 const server = express();
 const fs = require('fs');
 const iconPath = path.join(__dirname, './icons/logo.ico');
-const confPath = path.join(app.getPath('userData'), 'config.json');
-const config = JSON.parse(fs.readFileSync(confPath, 'utf-8'));
 app.setAppUserModelId("com.squirrel.lastfm-rich-presence.lastfm-rich-presence");
 let appIcon = null;
 let status = false;
-let backupUsername = config.username;
-let backupKey = config.key;
+//let backupUsername = config.username;
+//let backupKey = config.key;
 
 if (require('electron-squirrel-startup')) {
 	app.quit();
@@ -36,9 +34,11 @@ server.post('/api/post-presence', (req, res) => {
 	} else {
 		status = true;
 		console.log('Started Rich Presence');
-        
-        if (username === ''|key ==='') {
+        const confPath = path.join(app.getPath('userData'), 'config.json');
+
+        if ((username === ''|key ==='')&& fs.existsSync(confPath)) {
             try {
+                const config = JSON.parse(fs.readFileSync(confPath, 'utf-8'));
                 if (config.username && config.key) {
                     username = config.username;
                     key = config.key;
@@ -48,9 +48,11 @@ server.post('/api/post-presence', (req, res) => {
                 console.log(error);
                 return null;
             }
-        }else{
+        }else if(username !== '' && key !== ''){
             fs.writeFileSync(confPath, JSON.stringify({username,key},null,2), 'utf-8');
             console.log({username,key}, "saved to config.json.");
+        }else{
+            console.log("Username and Key are empty.")
         }
             
         
